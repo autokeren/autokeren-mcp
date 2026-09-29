@@ -1,0 +1,36 @@
+{
+  "$schema": "https://raw.githubusercontent.com/modelcontextprotocol/registry/main/schema/server.schema.json",
+  "name": "com.autokeren/mcp",
+  "description": "Autonomous AI video production studio for agents: script, images, voice, verified YouTube footage sourcing, Gemini QA, and premium Remotion renders — 40 tools, one credit wallet. Produce complete 1080p MP4 videos end-to-end from any MCP client.",
+  "version": "1.0.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.autokeren.com"
+    }
+  ],
+  "repository": {
+    "url": "https://github.com/autokeren/autokeren-mcp",
+    "source": "https://github.com/autokeren/autokeren-mcp"
+  },
+  "website_url": "https://mcp.autokeren.com",
+  "logo_url": "https://autokeren.com/logo_ak.jpg",
+  "tags": ["video-generation", "ai-video", "youtube", "media", "production"],
+  "tools": [
+    { "name": "get_workflow", "description": "The complete AutoKeren production playbook — call this first." },
+    { "name": "list_models", "description": "All AI models with per-model credit pricing." },
+    { "name": "estimate_cost", "description": "Predict total credits for a production before generating." },
+    { "name": "create_project", "description": "Start a new video production project." },
+    { "name": "load_scenes", "description": "Load your own narrations, visual prompts, and camera animations." },
+    { "name": "generate_assets", "description": "Queue image + TTS generation for every scene." },
+    { "name": "render_video", "description": "Final MP4 render (1080p, loudness-normalized)." },
+    { "name": "youtube_search", "description": "Search YouTube for b-roll and research footage." },
+    { "name": "yt_dlp_download", "description": "Download via yt-dlp with verified R2 upload." },
+    { "name": "index_shots", "description": "Gemini watches a video and indexes every camera shot with timestamps." },
+    { "name": "cut_video", "description": "Cut segments per scene (separate mode) with verified uploads." },
+    { "name": "attach_scene_media_batch", "description": "Attach real footage to up to 50 scenes in one call." },
+    { "name": "check_video", "description": "Full-video QA audit that classifies real footage vs AI stills." },
+    { "name": "render_remotion", "description": "Async premium Remotion render (submit, then poll)." },
+    { "name": "suggest_packaging", "description": "A/B titles, thumbnail concept, and SEO packaging." }
+  ]
+}
