@@ -73,6 +73,7 @@ Then just tell your agent: *"Read https://mcp.autokeren.com/skill.md and follow 
 - **Honest QA** — `check_video` reports `media_type_report`: which time ranges contain real moving footage vs still images with camera motion. Your agent can't fool itself.
 - **0-CR free tier** — Cloudflare models (script + image) + Aura TTS produce a complete video for **zero credits**.
 - **Async premium renders** — submit returns `poll_id` instantly; poll `render_remotion_result` like a pro.
+- **All the formats** — `create_project({aspect_ratio: "9:16"})` for Shorts (portrait canvas + portrait images), `render_video({resolution: "4k"})` for 3840x2160 masters.
 - **Battle-tested** — hardened by live agent audits; every hard-won rule is baked into [skill.md](https://mcp.autokeren.com/skill.md).
 
 ## Pricing snapshot
