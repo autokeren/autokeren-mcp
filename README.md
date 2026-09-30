@@ -1,6 +1,6 @@
 # AutoKeren MCP — AI Video Studio for Agents
 
-![MCP](https://img.shields.io/badge/MCP-Streamable_HTTP-6E56CF) ![Tools](https://img.shields.io/badge/tools-40-8b5cf6) ![Protocol](https://img.shields.io/badge/protocol-2024--11--05%20%7C%202025--03--26%20%7C%202025--06--18-blue) ![Free tier](https://img.shields.io/badge/free_tier-0_CR-10b981)
+![MCP](https://img.shields.io/badge/MCP-Streamable_HTTP-6E56CF) ![Tools](https://img.shields.io/badge/tools-42-8b5cf6) ![Protocol](https://img.shields.io/badge/protocol-2024--11--05%20%7C%202025--03--26%20%7C%202025--06--18-blue) ![Free tier](https://img.shields.io/badge/free_tier-0_CR-10b981)
 
 **Give any AI agent a complete, autonomous video production studio.**
 
@@ -55,7 +55,7 @@ curl -X POST https://mcp.autokeren.com \
 
 Then just tell your agent: *"Read https://mcp.autokeren.com/skill.md and follow it."*
 
-## The 40 Tools
+## The 42 Tools
 
 | Category | What it does |
 |---|---|
@@ -64,7 +64,7 @@ Then just tell your agent: *"Read https://mcp.autokeren.com/skill.md and follow 
 | **Research & Sourcing** (6) | `youtube_search`, `yt_dlp_download`, `index_shots` (Gemini watches & timestamps every shot), `cut_video` (per-scene clips via `separate:true`), `extract_frames`, `fetch_to_r2` |
 | **AI Vision & QA** (4) | `check_vision` (free), `analyze_media`, `check_video` — full-video audit that **classifies real footage vs AI stills per time range**, `review_video` (production score /10) |
 | **Packaging & Upload** (3) | `suggest_packaging` (free A/B titles + thumbnail + SEO), `get_presigned_upload` (bypass 100MB limits), `prepare_remotion` |
-| **Premium Render** (2) | `render_remotion` (async submit → poll_id instantly) + `render_remotion_result` (container Remotion renders) |
+| **Premium Render** (4) | `render_remotion` (one-shot async) + `render_remotion_result` (poll), or the incremental path: `render_remotion_slide` (ONE scene, full motion graphics, 0.5 CR, **9:16 Shorts supported**) → QA per slide → `stitch_remotion_slides` (1 CR) |
 
 ## Why agents love it
 
@@ -73,6 +73,9 @@ Then just tell your agent: *"Read https://mcp.autokeren.com/skill.md and follow 
 - **Honest QA** — `check_video` reports `media_type_report`: which time ranges contain real moving footage vs still images with camera motion. Your agent can't fool itself.
 - **0-CR free tier** — Cloudflare models (script + image) + Aura TTS produce a complete video for **zero credits**.
 - **Async premium renders** — submit returns `poll_id` instantly; poll `render_remotion_result` like a pro.
+- **Per-slide premium renders** — render one Remotion slide at a time (seconds per slide), QA each before committing, stitch at the end. Failure isolation + per-slide QA.
+- **Attached media is sacred** — `generate_assets` never overwrites media you attached (official photos, sourced footage); it only fills what's missing.
+- **Asset Library** — every verified MCP output is auto-indexed into the dashboard library.
 - **All the formats** — `create_project({aspect_ratio: "9:16"})` for Shorts (portrait canvas + portrait images), `render_video({resolution: "4k"})` for 3840x2160 masters.
 - **Battle-tested** — hardened by live agent audits; every hard-won rule is baked into [skill.md](https://mcp.autokeren.com/skill.md).
 
