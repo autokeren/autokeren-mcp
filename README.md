@@ -55,7 +55,7 @@ curl -X POST https://mcp.autokeren.com \
 
 Then just tell your agent: *"Read https://mcp.autokeren.com/skill.md and follow it."*
 
-## The 43 Tools
+## The 48 Tools
 
 | Category | What it does |
 |---|---|
@@ -89,6 +89,27 @@ Then just tell your agent: *"Read https://mcp.autokeren.com/skill.md and follow 
 | Video clip | — | Runway 60–740 CR per 5s (duration-scaled) |
 
 Self-service top-up (QRIS/VA for Indonesia, card for international) via `topup_credits` or the studio. Live prices: `list_models`.
+
+## 🎬 Film Mode (cinematic_film)
+
+Consistent-character short films, end to end:
+- `generate_character_sheet` — multi-angle identity lock (one-time per character)
+- `extract_last_frame` — frame chaining: scene N's last frame → scene N+1's first frame (continuous motion)
+- `cinematic_film` script gen — three-act structure, character bible, shot/lighting language, dialogue
+- Full MCP playbook in `skill.md` (FILM MODE section)
+
+## 🎙️ Voice Routing — 45 verified voices
+
+Per-language voice catalog; unknown names are rejected (no silent Adam fallback):
+
+| Language | Voices |
+|---|---|
+| English (US) | Adam, Antoni, Brian, Dave, Callum, Harry, James, Jeremy, Liam, Michael, Sam, Sarah, Rachel, Nicole, Charlie |
+| English (UK) | Daniel, Freya, George, Charlotte, Dorothy, Jessie |
+| Deutsch (native) | Otto, Leon Stern, Leonie, Christian, Lea, Joha |
+| Multilingual (incl. Indonesian) | Clyde, Arnold, Domi, Ethan, Fin, Mimi, Matilda, Grace, Giovanni, Serena, Thomas, Drew, Elli, Emily, Gigi, Glinda, Matthew, Patrick |
+
+**Persona → Voice auto-mapping**: automotive `aggressive` + German → Leon Stern, `nuanced` + German → Otto (EN: Callum/George, ID: Arnold/Matilda). No manual voice needed — `createScript` stamps the persona automatically.
 
 ## Links
 

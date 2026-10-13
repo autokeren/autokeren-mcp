@@ -1,6 +1,6 @@
 # AutoKeren MCP — Agent Skill
 
-Autonomous AI video production: script → images → TTS → 1080p MP4, plus verified YouTube footage sourcing, Gemini QA, and premium Remotion renders. 40 tools, one credit wallet. This document teaches you everything — read it once, then produce videos end-to-end.
+Autonomous AI video production: script → images → TTS → 1080p MP4, plus verified YouTube footage sourcing, Gemini QA, and premium Remotion renders. 48 tools, one credit wallet. This document teaches you everything — read it once, then produce videos end-to-end.
 
 ## Connect
 
@@ -9,6 +9,24 @@ Autonomous AI video production: script → images → TTS → 1080p MP4, plus ve
 - **Protocol versions**: 2024-11-05, 2025-03-26, 2025-06-18 (echoed on initialize; JSON-RPC batch accepted but not required)
 - **Free, no key needed**: get_workflow, list_models, estimate_cost, suggest_packaging
 - **Quick test**: POST with `{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"list_models","arguments":{}}}`
+
+## Voice Routing (TTS) — 45 verified voices
+
+Pass a voice **NAME (case-insensitive)** or raw **voice_id** to `generate_speech` or any `voice` param. Unknown names are **REJECTED with a clear error** — never a silent Adam fallback.
+
+- **English (US):** Adam, Antoni, Brian, Dave, Callum, Harry, James, Jeremy, Liam, Michael, Sam, Sarah, Rachel, Nicole, Charlie
+- **English (UK):** Daniel, Freya, George, Charlotte, Dorothy, Jessie
+- **Deutsch (native):** Otto, Leon Stern, Leonie, Christian, Lea, Joha
+- **Multilingual (cocok Bahasa Indonesia):** Clyde, Arnold, Domi, Ethan, Fin, Mimi, Matilda, Grace, Giovanni, Serena, Thomas, Drew, Elli, Emily, Gigi, Glinda, Matthew, Patrick
+
+Models: multilingual v2 (29 languages incl. Indonesian + German), Flash v2.5 (32 languages), Eleven v4 (90+ languages).
+Call `list_voices` for the live catalog. ⚠️ ElevenLabs Default voices expire Dec 31 2026 — after that, pass voice_ids from your workspace.
+
+**Persona → Voice auto-mapping** (no manual voice needed for automotive content):
+- `aggressive` persona + German → Leon Stern | + English → Callum | + Indonesian → Arnold
+- `nuanced` persona + German → Otto | + English → George | + Indonesian → Matilda
+- createScript (videoType `automotive`) stamps `scenePersona` into every scene automatically.
+- Voice priority per scene: `sceneVoice` (explicit) > persona-mapped voice > global `voice`. Set `scenePersona` per scene via load_scenes (e.g. film characters), or `voicePersona` via project metadata / generate-assets options.
 
 ## Golden Rules
 
@@ -19,6 +37,12 @@ Autonomous AI video production: script → images → TTS → 1080p MP4, plus ve
 5. **Image prompts: NEVER use brand names** — moderation rejects them. Describe generically ("sleek German luxury sedan", not "BMW i7").
 6. **After every render**: `get_status` → `verify_render` → `check_video`. The QA report classifies **real moving footage vs still-images-with-camera-motion** per time range — do not accept a video that was supposed to contain real footage if it only contains stills.
 7. **Expensive calls auto-refund on failure**, but wasted wall-clock time does not — verify inputs first.
+
+## Worked Example — EN-US Channel Car Video (copy this pattern)
+
+The proven full-production pattern for US-market automotive channel videos — research freshness gate, per-photo Gemini verification, official-film hook windows, sticker/countdown script format, US number formats, stretch tiers, loop-gate, clean-voice mastering, and the 7 QA gates. Reference production scored 9.6/10.
+
+Read it: **https://mcp.autokeren.com/examples/example_us_channel_car.md**
 
 ## Production Workflow (standard)
 
@@ -31,6 +55,43 @@ get_workflow → list_models → estimate_cost → create_project
 ```
 
 Full free-tier production: Cloudflare models (script, image) + Aura TTS = **0 CR** — verified working.
+
+**Formats**: `create_project({aspect_ratio: "9:16"})` → portrait canvas + portrait images (Shorts). `render_video({resolution: "4k"})` → 3840x2160 (also: 1080p default, 2k 2560x1440).
+
+## Limits & Access Rules (enforced server-side)
+
+- **Daily cap**: 700 expensive-tool calls per user per day (generation/sourcing/QA/render tools). Cheap tools (get_status, get_scenes, list_models, estimate_cost...) are uncapped. The cap resets at midnight UTC; hitting it returns a clear error.
+- **Project ownership**: every project-scoped tool verifies the project belongs to YOUR key's account. Other users' projects return "Access denied" — there is no way around this by design.
+- **R2 key namespaces**: `projects/<pid>/...` keys must target YOUR projects; `members/<uid>/...` keys must match your uid. Any other prefix (e.g. `scratch/...`) is allowed — use unique keys.
+- **Dead-URL guard**: set_scene_media rejects 404/410 media URLs — upload through fetch_to_r2 / yt_dlp_download / cut_video first (all return `verified: true`).
+- **Attached media is sacred**: generate_assets NEVER overwrites media you attached via set_scene_media / attach_scene_media_batch — it only fills what's missing (null image → image, null audio → TTS). You can safely attach official assets BEFORE or AFTER generate_assets.
+- **Asset Library**: every verified MCP output (fetch_to_r2, yt_dlp, cut_video, slides) is auto-indexed into the dashboard Asset Library — browse it with `list_assets({asset_type, search})` and re-attach any asset to scenes for revisions.
+
+### ReviewSceneData schema (for render_remotion_slide)
+
+```json
+{
+  "kind": "chapter | footage | stats | compare",
+  "audio": "https://... (public TTS/audio URL)",
+  "frames": 149,
+  "chapter": {"title": "MIT TRANSFORM", "subtitle": "optional", "bgImage": "https://... optional"},
+  "coverImage": "https://... full-bleed background image",
+  "coverVideo": "https://... full-bleed background video",
+  "footage": {"videoSrc": "https://...", "imgSrc": "https://...", "caption": "text under frame"},
+  "stats": [{"value": "621 HP", "label": "Power", "delay": 15, "color": "#8b5cf6"}],
+  "lowerThird": {"model": "Denza D9", "price": "$50,000", "spec": "EV SUV"},
+  "compare": {"leftImg": "https://...", "rightImg": "https://...", "leftLabel": "A", "rightLabel": "B", "leftPrice": "$40k", "rightPrice": "$50k"},
+  "ticker": ["string1", "string2"],
+  "tickerPosition": "bottom | top",
+  "theme": {"accent": "#8b5cf6", "textColor": "#ffffff", "subtitleColor": "#9ca3af", "titleSize": 72, "bg": "#0a0e1a"},
+  "compare": {"leftImg": "https://...", "rightImg": "https://...", "leftLabel": "A", "rightLabel": "B", "leftPrice": "$40k", "rightPrice": "$50k", "leftProgress": 45, "rightProgress": 85}
+}
+```
+- `chapter`: object with `title` (required), `subtitle`, `bgImage`. Shorthand: string also works — `"chapter": "TITLE"` auto-converts.
+- `stats`: array of `{value, label, delay}` — delay in frames (15 ≈ 0.5s). Shorthand: array of strings also works.
+- `lowerThird`: `{model, price, spec}` — slide-in info card from bottom-left.
+- `kind` determines the layout: chapter = title card with bg, footage = framed video/image, stats = centered stat cards, compare = side-by-side.
+- **Honest failures**: extract_frames refunds if frames never reach R2; render_remotion times out after 20 min of processing (full refund); every failed generation auto-refunds. If a tool reports success, its outputs exist.
 
 ### Runway image models (paid)
 
@@ -61,15 +122,52 @@ Match the mood: rotate_cw for product reveals, shake for impact moments, pan_lef
 ## Premium Render (ReviewLayout — async)
 
 ```
-prepare_remotion (validate composition — free-ish sanity check)
-→ render_remotion (submits → returns poll_id INSTANTLY, 15 CR)
+One-shot: prepare_remotion (validate) → render_remotion (15 CR, poll_id instantly).
+Per-slide INCREMENTAL (recommended for long productions & Shorts): render_remotion_slide (ONE scene, full motion graphics, 0.5 CR, 16:9/9:16/1:1) → QA that slide (analyze_media) → fix & re-render → repeat → stitch_remotion_slides (1 CR).
 → render_remotion_result({poll_id}) every 10–15s
    → "processing" (keep polling) | "completed" (MP4 URL) | "failed" (auto-refunded)
+
+### Production Standard: Premium Video with ElevenLabs + AI Video + Motion Graphics
+
+Battle-tested pipeline for a complete premium video using ALL ElevenLabs products. Every scene has motion: Ken Burns on images, AI video backgrounds, Remotion overlays.
+
+**Step 1 — TTS + exact frames:**
+  generate_speech({model_id: "elevenlabs-eleven_multilingual_v2", voice: "Adam", text: "..."})
+  get_audio_duration({audio_url: "..."}) → returns EXACT frames — never guess
+
+**Step 2 — Visuals per scene (pick one):**
+  - Ken Burns image (title scenes): elevenlabs_image → pass as chapter.bgImage
+  - AI video background (cinematic scenes): elevenlabs_video (duration_secs: 4|6|8) → pass as coverVideo
+  - AI video is auto-muted + auto-slowed (coverVideoRate = video_dur / scene_dur)
+
+**Step 3 — Render per slide:**
+  render_remotion_slide({scene: {kind: "chapter", audio: "TTS url", frames: EXACT,
+    chapter: {title: "...", subtitle: "...", bgImage: "ElevenLabs image"},
+    // OR: coverVideo: "ElevenLabs AI video url", coverVideoRate: 0.5,
+    stats: [{value: "90+", label: "Languages", delay: 15}],
+    lowerThird: {model: "...", price: "...", spec: "..."},
+    ticker: ["tagline"], theme: {accent: "#e8a23c"}
+  }, output_r2key: "my-video/s1.mp4"})
+
+**Step 4 — Stitch:**
+  stitch_remotion_slides({slides: [url1...urlN], output_r2key: "my-video/final.mp4"})
+
+**Scene type guide:**
+  | Scene type | Visual | Overlays |
+  | Opening/Title | elevenlabs_image (Ken Burns) | chapter card |
+  | Problem/Stats | elevenlabs_video (AI motion) | stats cards |
+  | Solution/Demo | elevenlabs_image (Ken Burns) | chapter + footage |
+  | Feature/How | elevenlabs_video (AI motion) | chapter card |
+  | Proof/Results | elevenlabs_image (Ken Burns) | chapter card |
+  | Closing/CTA | elevenlabs_image (Ken Burns) | chapter + lowerThird + ticker |
+
+**coverVideoRate:** video_duration / scene_duration (e.g. 6s video in 12s scene = 0.5).
+AI video is auto-muted — only ElevenLabs TTS is audible.
 ```
 
 Same async pattern as elevenlabs_result. Renders typically take 1–5 min.
 
-## Tool Catalog (40 tools)
+## Tool Catalog (48 tools)
 
 ### Pipeline
 
@@ -81,7 +179,7 @@ Same async pattern as elevenlabs_result. Renders typically take 1–5 min.
 - `create_project` — Create a new video production project.
 - `load_scenes` — Load your authored scenes into the project.
 - `generate_assets` — Queue asset generation (images + TTS voice) for every scene.
-- `render_video` — Queue the final MP4 render (1080p, loudness-normalized).
+- `render_video` — Queue the final MP4 render (loudness-normalized).
 - `get_status` — Get project + render job status, progress and the final video URL when complete.
 - `list_videos` — List recent video projects (id, title, status, video URL).
 - `set_scene_media` — Set video or image URL for a specific scene (footage injection).
@@ -92,15 +190,22 @@ Same async pattern as elevenlabs_result. Renders typically take 1–5 min.
 - `get_render_errors` — Deep render failure inspection: recent render jobs with error messages, plus every FAILED/stuck scene with its media URLs and suggested fixes.
 - `get_usage` — Per-model usage report from your credit ledger: which models/stages you used, how many calls, credits spent per model, over N days (default 30).
 
+### Film Mode (cinematic_film)
+
+- `generate_character_sheet` — FILM MODE: generate a multi-angle character reference sheet (front/3-4/side/back views + 3 expression studies) from a visual description.
+- `extract_last_frame` — FILM MODE: extract the FINAL frame of a scene clip → JPG in R2.
+- `restart_container` — OPS: force-restart a director container DO (default: tool-runner).
+
 ### Media Generation
 
 - `generate_image` — Playground: generate a single image with any image model (Flux, Gemini image.
-- `generate_speech` — Playground: generate speech or a sound effect with any TTS model standalone.
+- `generate_speech` — Playground: generate speech or a sound effect.
 - `generate_video_clip` — Playground: generate a short video clip with a video model (Veo, Seedance) standalone.
 - `elevenlabs_image` — ElevenLabs image generation (multi-provider): text-to-image or image-to-image (pass image_url to edit/restyle).
 - `elevenlabs_video` — ElevenLabs video generation (multi-provider): text-to-video OR image-to-video (pass image_url as start_frame — e.
 - `elevenlabs_result` — Poll an ElevenLabs generation.
 - `elevenlabs_credits` — Check the ElevenLabs subscription: remaining audio characters and image/video credits.
+- `list_voices` — The full TTS voice catalog (45 verified voices grouped by language: EN-US, EN-UK, German native, Indonesian-capable multilingual) plus workspace voices.
 
 ### Research & Sourcing
 
@@ -126,6 +231,11 @@ Same async pattern as elevenlabs_result. Renders typically take 1–5 min.
 
 ### Premium Render
 
+- `render_remotion` — ASYNC one-call Remotion render via container (absurd-engine, kept warm 2h).
+- `render_remotion_slide` — PREMIUM PER-SLIDE RENDER: render ONE scene with full Remotion motion graphics (chapter/stats/lower-third animations — same quality as render_remotion, just this scene's duration).
+- `stitch_remotion_slides` — FINAL STEP of the per-slide pipeline: ffmpeg-concat your rendered slides (in order) into the final MP4 → R2.
+- `get_audio_duration` — Probe a public audio URL (WAV/MP3) and return the EXACT duration + frame count at 30fps.
+- `list_assets` — Browse YOUR Asset Library: images, audio, and videos from previous generations, uploads, and pipeline outputs (fetch_to_r2, yt_dlp, cut_video, slides — all auto-indexed).
 - `render_remotion` — ASYNC one-call Remotion render via container (absurd-engine, kept warm 2h).
 - `render_remotion_result` — Poll an async render_remotion job.
 
