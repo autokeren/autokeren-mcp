@@ -1,6 +1,6 @@
 # AutoKeren MCP — Agent Skill
 
-Autonomous AI video production: script → images → TTS → 1080p MP4, plus verified YouTube footage sourcing, Gemini QA, and premium Remotion renders. 48 tools, one credit wallet. This document teaches you everything — read it once, then produce videos end-to-end.
+Autonomous AI video production: script → images → TTS → 1080p MP4, plus verified YouTube footage sourcing, Gemini QA, and premium Remotion renders. 50 tools, one credit wallet. This document teaches you everything — read it once, then produce videos end-to-end.
 
 ## Connect
 
@@ -27,6 +27,21 @@ Call `list_voices` for the live catalog. ⚠️ ElevenLabs Default voices expire
 - `nuanced` persona + German → Otto | + English → George | + Indonesian → Matilda
 - createScript (videoType `automotive`) stamps `scenePersona` into every scene automatically.
 - Voice priority per scene: `sceneVoice` (explicit) > persona-mapped voice > global `voice`. Set `scenePersona` per scene via load_scenes (e.g. film characters), or `voicePersona` via project metadata / generate-assets options.
+
+## Script Generation & Research (create_script + fetch_context)
+
+`create_script({project_id, topic, video_type, script_model, context?, research?})` — AI writes N scenes and auto-saves them. `load_scenes` remains available for hand-written scripts.
+
+**Script models (billed per script):**
+- `gemini-4-argon` — PREMIUM flagship reasoning, 1M context, best quality — **10 CR per script**
+- `gemini-3.1-pro-preview` / `gemini-2.5-pro` — 0.5 CR
+- `gemini-3-flash-preview` — default, fast — 0.1 CR
+- `@cf/qwen/qwen2.5-coder-32b-instruct`, `@cf/zai-org/glm-5.3-flash` — FREE (0 CR)
+
+**Feeding research data (agents: read this):**
+- Option A — auto: `research: true` (default) → grounded Google Search research runs automatically.
+- Option B — your own browser research: pass it as `context`. Send **DISTILLED notes (3-10K chars): facts, numbers, dates, quotes** — NOT raw page dumps (menus/ads/boilerplate waste input tokens and degrade script focus). **Hard cap: 50K chars.** Set `research: false` so the system does not double-research.
+- Use `fetch_context({topic})` for grounded research only (returns context + sources to review before writing).
 
 ## Golden Rules
 
@@ -167,7 +182,7 @@ AI video is auto-muted — only ElevenLabs TTS is audible.
 
 Same async pattern as elevenlabs_result. Renders typically take 1–5 min.
 
-## Tool Catalog (48 tools)
+## Tool Catalog (50 tools)
 
 ### Pipeline
 
@@ -178,6 +193,8 @@ Same async pattern as elevenlabs_result. Renders typically take 1–5 min.
 - `topup_credits` — Create a real payment link (Tripay: QRIS/virtual account, IDR) to top up credits.
 - `create_project` — Create a new video production project.
 - `load_scenes` — Load your authored scenes into the project.
+- `fetch_context` — Grounded research for a topic (Google Search via Gemini 3.
+- `create_script` — AI WRITES the script and auto-saves N scenes into the project (three-act structure, visual prompts, narration, dialogue for cinematic_film; optional grounded research).
 - `generate_assets` — Queue asset generation (images + TTS voice) for every scene.
 - `render_video` — Queue the final MP4 render (loudness-normalized).
 - `get_status` — Get project + render job status, progress and the final video URL when complete.

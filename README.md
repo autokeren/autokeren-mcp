@@ -90,6 +90,14 @@ Then just tell your agent: *"Read https://mcp.autokeren.com/skill.md and follow 
 
 Self-service top-up (QRIS/VA for Indonesia, card for international) via `topup_credits` or the studio. Live prices: `list_models`.
 
+## ✍️ Script Generation — AI writes the script
+
+`create_script` (Gemini) writes + auto-saves scenes. Models (billed per script):
+- `gemini-4-argon` — **PREMIUM flagship reasoning, 1M context — 10 CR**
+- `gemini-3-flash-preview` — default, fast — 0.1 CR | `@cf/qwen`, `@cf/glm-5.3-flash` — FREE
+
+Research feeding: send **distilled notes 3-10K chars** (facts/numbers/quotes — not raw page dumps), hard cap 50K. Or `research: true` (default) for auto Google-Search grounding. `load_scenes` still available for hand-written scripts.
+
 ## 🎬 Film Mode (cinematic_film)
 
 Consistent-character short films, end to end:
