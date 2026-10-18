@@ -1,6 +1,6 @@
 # AutoKeren MCP — Agent Skill
 
-Autonomous AI video production: script → images → TTS → 1080p MP4, plus verified YouTube footage sourcing, Gemini QA, and premium Remotion renders. 52 tools, one credit wallet. This document teaches you everything — read it once, then produce videos end-to-end.
+Autonomous AI video production: script → images → TTS → 1080p MP4, plus verified YouTube footage sourcing, Gemini QA, and premium Remotion renders. 53 tools, one credit wallet. This document teaches you everything — read it once, then produce videos end-to-end.
 
 ## Connect
 
@@ -28,16 +28,18 @@ Call `list_voices` for the live catalog. ⚠️ ElevenLabs Default voices expire
 - createScript (videoType `automotive`) stamps `scenePersona` into every scene automatically.
 - Voice priority per scene: `sceneVoice` (explicit) > persona-mapped voice > global `voice`. Set `scenePersona` per scene via load_scenes (e.g. film characters), or `voicePersona` via project metadata / generate-assets options.
 
-## Motion Graphics Templates (data-driven slides)
+## Motion Graphics Templates — 11 core + 152 shotcraft showcases
 
-11 data-driven templates render broadcast-quality slides from YOUR data — no design skill needed. Charts, titles, media grids, FX.
+**11 CORE templates** (data-driven — YOUR data fills the schema): `stat-counter` (count-up number + substats — prices/HP/km), `comparison-chart` (racing bars + numbers count-up with the bar — competitors), `line-chart` (SVG draw-in trend), `progress-bars` (% rankings), `cinematic-title-intro` (letterbox intro), `end-card`, `subscribe-reminder`, `gallery-grid` (2-6 photos + captions), `lower-third` (name overlay), `quote-card`, `glitch-text` (RGB-split FX).
+
+**152 SHOTCRAFT showcase shots** (`sc-*` ids): cinematic camera moves (2.5D flyovers, crash-zoom, cursor tours), transitions (barn-door, page-turn, gradient), typography (glitch cycles, word sweeps), UI entrances (deck-deal, carousels, card stacks), data-viz moves, openings & outros — adapted from video-shotcraft (Apache 2.0). Self-contained demos: pass `data: {}`, default duration auto-applies from the catalog. Native 16:9.
 
 **Workflow:**
-1. `list_templates()` — see all 11 schemas + examples (free)
-2. `render_template_slide({template_id, data, output_r2key, duration?, aspect_ratio?, theme?, audio?})` — ~0.5 CR per slide → MP4 in R2
-3. Repeat per slide, then `stitch_remotion_slides({slides: [urls...]})` — or MIX template slides with regular `render_remotion_slide` scenes in one video.
+1. `list_templates({prefix?: "sc-", category?})` — browse 163 total: core (schemas + examples) + sc-* showcases. Free.
+2. `render_template_slide({template_id, data, output_r2key, duration?, aspect_ratio?, theme?, audio?})` — ~0.5 CR → MP4 in R2
+3. Mix freely: core + sc-* + regular `render_remotion_slide` scenes in one video via `stitch_remotion_slides`.
 
-**Templates:** `stat-counter` (count-up number + substats — prices/HP/km), `comparison-chart` (racing bars — competitors), `line-chart` (draw-in trend), `progress-bars` (% rankings), `cinematic-title-intro` (letterbox intro), `end-card`, `subscribe-reminder`, `gallery-grid` (2-6 photos + captions), `lower-third` (name overlay), `quote-card`, `glitch-text` (RGB-split FX).
+**Proportional choreography (dead-tail fix):** core-template animations STRETCH with `duration` — a 10s comparison-chart animates for ~8.5s (85% window + 15% natural hold). Numbers count-up and land exactly at the end. Fine-tune via data: `anim_secs` (fixed animation length) or `hold_secs` (fixed static tail) — e.g. `data: {series: [...], hold_secs: 1}`.
 
 **Example — automotive price slide:**
 `render_template_slide({template_id: "stat-counter", data: {value: 19990, prefix: "€", label: "Renault Twingo — EV termurah Eropa", substats: [{value: "263 km", label: "WLTP"}]}, output_r2key: "members/<uid>/slides/price.mp4", duration: 5})`
@@ -198,7 +200,7 @@ AI video is auto-muted — only ElevenLabs TTS is audible.
 
 Same async pattern as elevenlabs_result. Renders typically take 1–5 min.
 
-## Tool Catalog (52 tools)
+## Tool Catalog (53 tools)
 
 ### Pipeline
 
@@ -266,13 +268,16 @@ Same async pattern as elevenlabs_result. Renders typically take 1–5 min.
 
 - `render_remotion` — ASYNC one-call Remotion render via container (absurd-engine, kept warm 2h).
 - `render_remotion_slide` — PREMIUM PER-SLIDE RENDER: render ONE scene with full Remotion motion graphics (chapter/stats/lower-third animations — same quality as render_remotion, just this scene's duration).
-- `list_templates` — Catalog of data-driven motion-graphics TEMPLATES (stat-counter, comparison-chart, line-chart, progress-bars, cinematic-title-intro, end-card, subscribe-reminder, gallery-grid, lower-third, quote-card, glitch-text).
+- `list_templates` — Catalog of motion-graphics templates: 11 data-driven core templates + 152 shotcraft showcase shots (sc-*, cinematic camera/transition/typography effects from video-shotcraft).
 - `render_template_slide` — Render ONE data-driven motion-graphics slide (MP4 in R2) from a template + your data.
 - `stitch_remotion_slides` — FINAL STEP of the per-slide pipeline: ffmpeg-concat your rendered slides (in order) into the final MP4 → R2.
 - `get_audio_duration` — Probe a public audio URL (WAV/MP3) and return the EXACT duration + frame count at 30fps.
 - `list_assets` — Browse YOUR Asset Library: images, audio, and videos from previous generations, uploads, and pipeline outputs (fetch_to_r2, yt_dlp, cut_video, slides — all auto-indexed).
 - `render_remotion` — ASYNC one-call Remotion render via container (absurd-engine, kept warm 2h).
 - `render_remotion_result` — Poll an async render_remotion job.
+### Other
+
+- `restart_slide_container` — OPS: force-recycle the ABSURD-ENGINE per-slide container instance (mcp-slide-v22).
 
 ## Pricing Snapshot
 
