@@ -39,12 +39,20 @@ Call `list_voices` for the live catalog. ⚠️ ElevenLabs Default voices expire
 2. `render_template_slide({template_id, data, output_r2key, duration?, aspect_ratio?, theme?, audio?})` — ~0.5 CR → MP4 in R2
 3. Mix freely: core + sc-* + regular `render_remotion_slide` scenes in one video via `stitch_remotion_slides`.
 
+**Phase 2 — PARAMETERIZED sc-* shots (konten Anda masuk ke shot sinematik):** 4 kartu sekarang menerima data: **sc-opening-spotlight-hero-card** {image: URL foto produk/mobil, lines: [2 string anotasi], accent}) — foto ANDA di bawah spotlight teater dengan panggung gelap; **sc-opening-magician-card-flourish** {label, heading, subtext}); **sc-opening-letterspace-materialize** {word: brand Anda}); **sc-outro-logo-shrink-wordmark-lockup** {wordmark, tagline}). Field kosong pakai konten demo. Resep reel mewah: spotlight (foto + 2 baris) → judul sinematik → stat-counter → grafik balap → lockup (wordmark Anda).
+
 **Proportional choreography (dead-tail fix):** core-template animations STRETCH with `duration` — a 10s comparison-chart animates for ~8.5s (85% window + 15% natural hold). Numbers count-up and land exactly at the end. Fine-tune via data: `anim_secs` (fixed animation length) or `hold_secs` (fixed static tail) — e.g. `data: {series: [...], hold_secs: 1}`.
 
 **Example — automotive price slide:**
 `render_template_slide({template_id: "stat-counter", data: {value: 19990, prefix: "€", label: "Renault Twingo — EV termurah Eropa", substats: [{value: "263 km", label: "WLTP"}]}, output_r2key: "members/<uid>/slides/price.mp4", duration: 5})`
 
 Theme: pass `{theme: {accent: "#8b5cf6"}}` to match your channel palette. Audio optional (TTS URL embeds in the slide).
+
+**Choosing sc-* shots (152 showcases render THEIR OWN demo content — data is ignored):**
+- PREVIEW visually first: https://vincentwei1021.github.io/video-shotcraft/ (dynamic gallery of every shot).
+- Category guide: `sc-camera-*` = 2.5D page flyovers & crash zooms (product screenshots as 3D planes) | `sc-transition-*` = scene-to-scene cut effects (barn-door, page-turn, gradient) | `sc-typography-*` = animated text moments | `sc-ui-entrance-*` = UI elements entering (card decks, carousels) | `sc-effects-*` = impact/polish (slams, spotlights) | `sc-opening-*` / `sc-outro-*` = video open/close | `sc-data-*` = data-viz motion | `sc-interaction-*` = UI interactions | `sc-rhythm-*` = beat-synced cuts.
+- Filter: `list_templates({prefix: "sc-transition"})` ↔ ids match the gallery card names.
+- Typical video recipe: `sc-opening-*` intro → core `stat-counter`/`comparison-chart` with YOUR data → `sc-camera-*` flyovers → `sc-transition-*` between segments → `end-card` + `subscribe-reminder` outro → `stitch_remotion_slides`.
 
 ## Script Generation & Research (create_script + fetch_context)
 
