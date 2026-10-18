@@ -41,6 +41,9 @@ Call `list_voices` for the live catalog. ⚠️ ElevenLabs Default voices expire
 
 **Phase 2 — PARAMETERIZED sc-* shots (konten Anda masuk ke shot sinematik):** 4 kartu sekarang menerima data: **sc-opening-spotlight-hero-card** {image: URL foto produk/mobil, lines: [2 string anotasi], accent}) — foto ANDA di bawah spotlight teater dengan panggung gelap; **sc-opening-magician-card-flourish** {label, heading, subtext}); **sc-opening-letterspace-materialize** {word: brand Anda}); **sc-outro-logo-shrink-wordmark-lockup** {wordmark, tagline}). Field kosong pakai konten demo. Resep reel mewah: spotlight (foto + 2 baris) → judul sinematik → stat-counter → grafik balap → lockup (wordmark Anda).
 
+**Example — cinematic automotive opening (foto mobil + spotlight):**
+render_template_slide({template_id: "sc-opening-spotlight-hero-card", data: {image: "https://...r2.dev/members/<uid>/car-press.jpg", lines: ["Der neue Twingo,", "elektrisch."], accent: "#c8a24a"}, aspect_ratio: "16:9", output_r2key: "members/<uid>/reel/s1_hero.mp4"}) — foto mobil muncul di kartu melayang di bawah spotlight teater, panggung gelap otomatis. NOTE: sc-* jangan kirim param duration (pakai defaultSeconds) — duration eksplisit lagi di-fix.
+
 **Proportional choreography (dead-tail fix):** core-template animations STRETCH with `duration` — a 10s comparison-chart animates for ~8.5s (85% window + 15% natural hold). Numbers count-up and land exactly at the end. Fine-tune via data: `anim_secs` (fixed animation length) or `hold_secs` (fixed static tail) — e.g. `data: {series: [...], hold_secs: 1}`.
 
 **Example — automotive price slide:**
