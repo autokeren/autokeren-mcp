@@ -55,7 +55,7 @@ curl -X POST https://mcp.autokeren.com \
 
 Then just tell your agent: *"Read https://mcp.autokeren.com/skill.md and follow it."*
 
-## The 48 Tools
+## The 54 Tools
 
 | Category | What it does |
 |---|---|
@@ -97,6 +97,18 @@ Self-service top-up (QRIS/VA for Indonesia, card for international) via `topup_c
 - `gemini-3-flash-preview` — default, fast — 0.1 CR | `@cf/qwen`, `@cf/glm-5.3-flash` — FREE
 
 Research feeding: send **distilled notes 3-10K chars** (facts/numbers/quotes — not raw page dumps), hard cap 50K. Or `research: true` (default) for auto Google-Search grounding. `load_scenes` still available for hand-written scripts.
+
+## 🎨 Motion Graphics Templates — data-driven slides
+
+11 data-driven templates: `stat-counter` (count-up prices/stats), `comparison-chart` (racing bars), `line-chart`, `progress-bars`, `cinematic-title-intro`, `end-card`, `subscribe-reminder`, `gallery-grid` (2-6 photos), `lower-third`, `quote-card`, `glitch-text`.
+
+```
+list_templates() → see schemas
+render_template_slide({template_id: "stat-counter", data: {value: 19990, prefix: "€", label: "..."}, output_r2key: "..."})
+stitch_remotion_slides({slides: [...]})  ← mix template + regular slides in ONE video
+```
+
+Adapted from [reactvideoeditor/remotion-templates](https://github.com/reactvideoeditor/remotion-templates) (free). ~0.5 CR per slide.
 
 ## 🎬 Film Mode (cinematic_film)
 

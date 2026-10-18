@@ -2,8 +2,8 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.autokeren/mcp",
   "title": "AutoKeren MCP",
-  "description": "AI video studio for agents — script to MP4, cinematic film mode (character sheets + frame chaining), b-roll sourcing, Gemini 3.8 QA, voice routing per language. 48 tools.",
-  "version": "1.3.0",
+  "description": "AI video studio for agents — 54 MCP tools: cinematic film mode, data-driven motion-graphics templates, voice routing (45 voices), Gemini 4 Argon scripts, footage sourcing, QA. mcp.autokeren.com",
+  "version": "1.4.0",
   "remotes": [
     {
       "type": "streamable-http",

@@ -1,6 +1,6 @@
 # AutoKeren MCP — Agent Skill
 
-Autonomous AI video production: script → images → TTS → 1080p MP4, plus verified YouTube footage sourcing, Gemini QA, and premium Remotion renders. 50 tools, one credit wallet. This document teaches you everything — read it once, then produce videos end-to-end.
+Autonomous AI video production: script → images → TTS → 1080p MP4, plus verified YouTube footage sourcing, Gemini QA, and premium Remotion renders. 52 tools, one credit wallet. This document teaches you everything — read it once, then produce videos end-to-end.
 
 ## Connect
 
@@ -27,6 +27,22 @@ Call `list_voices` for the live catalog. ⚠️ ElevenLabs Default voices expire
 - `nuanced` persona + German → Otto | + English → George | + Indonesian → Matilda
 - createScript (videoType `automotive`) stamps `scenePersona` into every scene automatically.
 - Voice priority per scene: `sceneVoice` (explicit) > persona-mapped voice > global `voice`. Set `scenePersona` per scene via load_scenes (e.g. film characters), or `voicePersona` via project metadata / generate-assets options.
+
+## Motion Graphics Templates (data-driven slides)
+
+11 data-driven templates render broadcast-quality slides from YOUR data — no design skill needed. Charts, titles, media grids, FX.
+
+**Workflow:**
+1. `list_templates()` — see all 11 schemas + examples (free)
+2. `render_template_slide({template_id, data, output_r2key, duration?, aspect_ratio?, theme?, audio?})` — ~0.5 CR per slide → MP4 in R2
+3. Repeat per slide, then `stitch_remotion_slides({slides: [urls...]})` — or MIX template slides with regular `render_remotion_slide` scenes in one video.
+
+**Templates:** `stat-counter` (count-up number + substats — prices/HP/km), `comparison-chart` (racing bars — competitors), `line-chart` (draw-in trend), `progress-bars` (% rankings), `cinematic-title-intro` (letterbox intro), `end-card`, `subscribe-reminder`, `gallery-grid` (2-6 photos + captions), `lower-third` (name overlay), `quote-card`, `glitch-text` (RGB-split FX).
+
+**Example — automotive price slide:**
+`render_template_slide({template_id: "stat-counter", data: {value: 19990, prefix: "€", label: "Renault Twingo — EV termurah Eropa", substats: [{value: "263 km", label: "WLTP"}]}, output_r2key: "members/<uid>/slides/price.mp4", duration: 5})`
+
+Theme: pass `{theme: {accent: "#8b5cf6"}}` to match your channel palette. Audio optional (TTS URL embeds in the slide).
 
 ## Script Generation & Research (create_script + fetch_context)
 
@@ -182,7 +198,7 @@ AI video is auto-muted — only ElevenLabs TTS is audible.
 
 Same async pattern as elevenlabs_result. Renders typically take 1–5 min.
 
-## Tool Catalog (50 tools)
+## Tool Catalog (52 tools)
 
 ### Pipeline
 
@@ -246,10 +262,12 @@ Same async pattern as elevenlabs_result. Renders typically take 1–5 min.
 - `prepare_remotion` — Prepares a Remotion ReviewLayout composition: validates scene data, calculates total duration, and returns the exact steps + CLI command to render.
 - `get_presigned_upload` — Generates a presigned R2 upload URL for DIRECT-TO-R2 uploads (bypasses the 100MB Worker body limit).
 
-### Premium Render
+### Premium Render & Templates
 
 - `render_remotion` — ASYNC one-call Remotion render via container (absurd-engine, kept warm 2h).
 - `render_remotion_slide` — PREMIUM PER-SLIDE RENDER: render ONE scene with full Remotion motion graphics (chapter/stats/lower-third animations — same quality as render_remotion, just this scene's duration).
+- `list_templates` — Catalog of data-driven motion-graphics TEMPLATES (stat-counter, comparison-chart, line-chart, progress-bars, cinematic-title-intro, end-card, subscribe-reminder, gallery-grid, lower-third, quote-card, glitch-text).
+- `render_template_slide` — Render ONE data-driven motion-graphics slide (MP4 in R2) from a template + your data.
 - `stitch_remotion_slides` — FINAL STEP of the per-slide pipeline: ffmpeg-concat your rendered slides (in order) into the final MP4 → R2.
 - `get_audio_duration` — Probe a public audio URL (WAV/MP3) and return the EXACT duration + frame count at 30fps.
 - `list_assets` — Browse YOUR Asset Library: images, audio, and videos from previous generations, uploads, and pipeline outputs (fetch_to_r2, yt_dlp, cut_video, slides — all auto-indexed).
