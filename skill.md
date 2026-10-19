@@ -1,6 +1,6 @@
 # AutoKeren MCP — Agent Skill
 
-Autonomous AI video production: script → images → TTS → 1080p MP4, plus verified YouTube footage sourcing, Gemini QA, and premium Remotion renders. 53 tools, one credit wallet. This document teaches you everything — read it once, then produce videos end-to-end.
+Autonomous AI video production: script → images → TTS → 1080p MP4, plus verified YouTube footage sourcing, Gemini QA, and premium Remotion renders. 54 tools, one credit wallet. This document teaches you everything — read it once, then produce videos end-to-end.
 
 ## Connect
 
@@ -37,7 +37,7 @@ Call `list_voices` for the live catalog. ⚠️ ElevenLabs Default voices expire
 **Workflow:**
 1. `list_templates({prefix?: "sc-", category?})` — browse 163 total: core (schemas + examples) + sc-* showcases. Free.
 2. `render_template_slide({template_id, data, output_r2key, duration?, aspect_ratio?, theme?, audio?})` — ~0.5 CR → MP4 in R2
-3. Heavy/slow sc-* shots (e.g. magician): add async:true — returns poll_id instantly; poll by passing poll_id every 30-60s until status=completed (5-15 min renders no longer time out). TRANSITION GUIDANCE (tested): for punchy PREMIUM reels (automotive/data/editorial) use HARD CUTS (omit transition) — a 0.5s fade tested LOWERED the premium score 8.8 to 8.3 and pacing 8.6 to 7.5 (reads as PowerPoint, kills editorial snap; Apple/Porsche-style = crisp confident cuts). Use fade/dissolve only for soft/ambient content, wipe/slide/circle for dynamic energy. Transitions available via stitch_remotion_slides({slides, transition, transition_duration}) — xfade micro-dynamic cuts (fade/dissolve/wipe/slide/circle) instead of hard cuts. Mix freely: core + sc-* + regular `render_remotion_slide` scenes in one video via `stitch_remotion_slides`.
+3. Batch monitoring: render_queue() lists ALL active jobs across shards. Heavy/slow sc-* shots (e.g. magician): add async:true — returns poll_id instantly; poll by passing poll_id every 30-60s until status=completed (5-15 min renders no longer time out). TRANSITION GUIDANCE (tested): for punchy PREMIUM reels (automotive/data/editorial) use HARD CUTS (omit transition) — a 0.5s fade tested LOWERED the premium score 8.8 to 8.3 and pacing 8.6 to 7.5 (reads as PowerPoint, kills editorial snap; Apple/Porsche-style = crisp confident cuts). Use fade/dissolve only for soft/ambient content, wipe/slide/circle for dynamic energy. Transitions available via stitch_remotion_slides({slides, transition, transition_duration}) — xfade micro-dynamic cuts (fade/dissolve/wipe/slide/circle) instead of hard cuts. Mix freely: core + sc-* + regular `render_remotion_slide` scenes in one video via `stitch_remotion_slides`.
 
 **Phase 2 — PARAMETERIZED sc-* shots (konten Anda masuk ke shot sinematik):** 9 kartu sekarang menerima data: **sc-opening-spotlight-hero-card** {image: URL foto produk/mobil, lines: [2 string anotasi], accent}) — foto ANDA di bawah spotlight teater dengan panggung gelap; **sc-opening-magician-card-flourish** {label, heading, subtext}); **sc-opening-letterspace-materialize** {word: brand Anda}); **sc-outro-logo-shrink-wordmark-lockup** {wordmark, tagline}). Kartu param tambahan: sc-data-timeline-travel {events[]}, sc-data-gauge-readout-moves-needle-sweep-selftest {gauges[], ready}, sc-opening-orbit-ring-title-open {title, subtitle, steps[]}, sc-typography-brand-ink-open {wordmark, kicker}, sc-typography-countdown-arc-scatter {numbers[], hero}. Field kosong pakai konten demo. Resep reel mewah v2: hero-stage (cutout PNG + 2 baris — broadcast look) → judul sinematik → stat-counter → grafik balap → lockup (wordmark Anda). Cutout prep: foto → Nano Banana 2 'solid white background' → PIL luminance key (alpha ramp 232-250) → transparent PNG → data.image.
 MOTION hero (moving car): (1) generate_image (Nano Banana 2, 21 CR): 'place this car on a dark theatrical stage, warm overhead spotlight, cinematic' from your press photo; (2) generate_video_clip (runway-seedance2, 60 CR/5s — CHEAPEST; image = stage photo, prompt: slow dolly/orbit, car stays parked, dark stage consistent); (3) render_template_slide hero-stage-motion {video: clipURL, lines: [2 anotasi]}. Total ~81 CR per motion hero. Set duration = clip duration (5s). QUALITY TIER DATA (tested): seedance2 (60 CR) clip scored 6.8/10 cinematic — motion adds production value but shows slight AI interpolation artifacts vs the pixel-perfect still hero-stage (8.8/10, 0.5 CR). For broadcast-grade motion use veo3.1_fast (300 CR) or seedance2_5 (740 CR, 1080p) and a stage-lit start image; for budget reels the still hero-stage remains the premium choice.
@@ -212,7 +212,7 @@ AI video is auto-muted — only ElevenLabs TTS is audible.
 
 Same async pattern as elevenlabs_result. Renders typically take 1–5 min.
 
-## Tool Catalog (53 tools)
+## Tool Catalog (54 tools)
 
 ### Pipeline
 
@@ -289,6 +289,7 @@ Same async pattern as elevenlabs_result. Renders typically take 1–5 min.
 - `render_remotion_result` — Poll an async render_remotion job.
 ### Other
 
+- `render_queue` — List ALL active render jobs across ALL container shards — status, progress %, stage, queue position.
 - `restart_slide_container` — OPS: force-recycle the ABSURD-ENGINE per-slide container instance (mcp-slide-v22).
 
 ## Pricing Snapshot
